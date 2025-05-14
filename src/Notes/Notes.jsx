@@ -5,9 +5,14 @@ import { ThemeContext } from "../Store/ThemeContext";
 import NotesList from "./NotesList";
 import moment from "moment";
 
-function Notes() {
+export default function Notes() {
   const [title, setTitle] = useState("");
-  const [priority, setPriority] = useState("high");
+
+  const [assignBy, setAssignBy] = useState("");
+  const [assignTo, setAssignTo] = useState("");
+  const [dueDate, setDueDate] = useState("");
+
+  const [priority, setPriority] = useState("");
   const { isDarkMode, toggleDarkMode } = useContext(ThemeContext);
   const [description, setDescription] = useState("");
   const [notes, setNotes] = useState([]);
@@ -18,27 +23,36 @@ function Notes() {
   const [pinTask, setPinTask] = useState(true);
   const [selectedColor, setSelectedColor] = useState("red");
   const [pinNote, setPinNote] = useState(false);
+  const [showNotesList, setShowNotesList] = useState(true);
 
   const handleEdit = (index) => {
+    setShowNotesList(false);
     const note = allNotes[index];
     const realIndex = allNotes.findIndex(
       (n) => n.title === note.title && n.description === note.description
     );
     setTitle(note.title);
     setDescription(note.description);
+    setAssignBy(note.assignBy);
+    console.log(note);
+    setAssignTo(note.assignTo);
+    setDueDate(note.dueDate);
+    setPriority(note.priority);
     setEdit(true);
     setEditIndex(realIndex);
   };
-  console.log(moment().format("h:mm:ss a"));
-  console.log(moment().startOf("hour").fromNow());
+
   const handleAddNote = () => {
     if (!title || !description || !priority) return;
-    setPriority(priority);
+    console.log(priority);
     const obj = {
       title: title,
       description: description,
       isPinned: pinNote,
       priority: priority,
+      assignBy: assignBy,
+      assignTo: assignTo,
+      dueDate: dueDate,
       timeStamp: moment().toISOString(),
       historyStamp: moment().calendar(),
     };
@@ -51,10 +65,7 @@ function Notes() {
     }
     setAllNotes(updatedNotes);
     setNotes(updatedNotes);
-    setEdit(false);
-    setEditIndex(null);
-    setTitle("");
-    setDescription("");
+    resetForm();
   };
 
   const handleDelete = (index) => {
@@ -102,147 +113,155 @@ function Notes() {
     setAllNotes(pinTask);
     setNotes(pinTask);
   };
-  const cancilUpdate = () => {
+
+  const cancelUpdate = () => {
+    resetForm();
+  };
+
+  function resetForm() {
     setEdit(false);
     setEditIndex(null);
     setTitle("");
     setDescription("");
-  };
-
+    setAssignBy("");
+    setAssignTo("");
+    setDueDate("");
+    setPriority("");
+    setShowNotesList(true);
+  }
+  console.log(showNotesList);
   return (
-    <div
-      className={`${
-        !isDarkMode ? "bg-gray-900 text-white" : "bg-white text-black"
-      } w-full mx-auto sm:max-w-2/3 lg:max-w-1/3 h-full shadow-md rounded-lg p-4 m-4`}
-    >
-      <div className="flex justify-between items-center mt-auto mb-auto">
-        <h1 className="text-2xl font-bold">My Notes</h1>
-
-        <div
-          className="bg-black/10 px-2.5 py-2 rounded-lg shadow-md cursor-pointer hover:bg-black/20 transition duration-300 ease-in-out"
-          onClick={toggleDarkMode}
-        >
-          {isDarkMode ? (
-            <FaSun size={24} color="orange" />
-          ) : (
-            <FaMoon size={24} className="text-gray-700" />
-          )}
-        </div>
-      </div>
-      <div className="space-y-4 mt-4">
-        <div>
-          <input
-            type="text"
-            id="first_name"
-            value={searchVal}
-            onChange={(e) => setSearchVal(e.target.value)}
-            className=" border border-gray-300  text-sm rounded-lg block w-full p-2.5  "
-            placeholder="Search notes..."
-            required
-          />
-        </div>
-        <div className="flex flex-col space-y-4">
-          <h1 className="xs:text-base lg:text-lg font-bold">My Notes</h1>
-          <input
-            type="text"
-            id="first_name"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            className=" border border-gray-300  text-sm rounded-lg   block w-full p-2.5  "
-            placeholder="title..."
-            required
-          />
-          <textarea
-            id="message"
-            rows="4"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            className="block p-2.5 w-full text-sm   rounded-lg border border-gray-300  "
-            placeholder="Write description.."
-          ></textarea>
-          <div className="block space-y-2 md:space-y-0 md:flex items-center md:space-x-6">
-            <div className="flex items-center">
-              <input
-                id="priority-high"
-                type="radio"
-                name="priority"
-                value="high"
-                checked={priority === "high"}
-                onChange={(e) => setPriority(e.target.value)}
-                className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300"
-              />
-              <label
-                htmlFor="priority-high"
-                className="ms-2 text-base sm:text-lg lg:text-xl font-medium "
-              >
-                High Priority
-              </label>
-            </div>
-
-            <div className="flex items-center">
-              <input
-                id="priority-medium"
-                type="radio"
-                name="priority"
-                onChange={(e) => setPriority(e.target.value)}
-                value="medium"
-                checked={priority === "medium"}
-                className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300"
-              />
-              <label
-                htmlFor="priority-medium"
-                className="ms-2 text-base sm:text-lg lg:text-xl font-medium "
-              >
-                Medium Priority
-              </label>
-            </div>
-            <div className="flex items-center">
-              <input
-                id="priority-low"
-                type="radio"
-                name="priority"
-                onChange={(e) => setPriority(e.target.value)}
-                value="low"
-                checked={priority === "low"}
-                className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300"
-              />
-              <label
-                htmlFor="priority-low"
-                className="ms-2 text-base sm:text-lg lg:text-xl font-medium "
-              >
-                Low Priority
-              </label>
-            </div>
+    <div className="min-h-screen bg-[#f8f9fb]  px-4 py-8">
+      {!showNotesList ? (
+        <div className="w-full m-auto max-w-2xl bg-white rounded-2xl shadow-xl border border-gray-200 p-8 transition-all duration-300">
+          <div className="mb-8">
+            <h1 className="text-3xl font-semibold text-gray-800">
+              {isEdit ? "update Task" : "Create New Task"}
+            </h1>
+            <p className="text-gray-500 mt-1 text-sm">
+              Stay organized and manage your tasks like a pro.
+            </p>
           </div>
 
-          <div className="flex justify-center space-x-2">
-            {isEdit && (
+          <form className="space-y-6">
+            <div>
+              <label className="block mb-1 text-sm font-medium text-gray-600">
+                Task Title
+              </label>
+              <input
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                type="text"
+                placeholder="e.g. Design Landing Page"
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none transition"
+              />
+            </div>
+
+            <div>
+              <label className="block mb-1 text-sm font-medium text-gray-600">
+                Description
+              </label>
+              <textarea
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                rows="4"
+                placeholder="Add a detailed description..."
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none transition"
+              />
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <div>
+                <label className="block mb-1 text-sm font-medium text-gray-600">
+                  Due Date
+                </label>
+                <input
+                  value={dueDate}
+                  onChange={(e) => setDueDate(e.target.value)}
+                  type="date"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none transition"
+                />
+              </div>
+              <div>
+                <label className="block mb-1 text-sm font-medium text-gray-600">
+                  Priority
+                </label>
+                <select
+                  value={priority}
+                  onChange={(e) => setPriority(e.target.value)}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none transition"
+                >
+                  <option value="">Select</option>
+                  <option value="low">Low</option>
+                  <option value="medium">Medium</option>
+                  <option value="high">High</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <div>
+                <label className="block mb-1 text-sm font-medium text-gray-600">
+                  Assigned By
+                </label>
+                <input
+                  type="text"
+                  value={assignBy}
+                  onChange={(e) => setAssignBy(e.target.value)}
+                  placeholder="e.g. Aman (Manager)"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none transition"
+                />
+              </div>
+              <div>
+                <label className="block mb-1 text-sm font-medium text-gray-600">
+                  Assign To
+                </label>
+                <select
+                  value={assignTo}
+                  onChange={(e) => setAssignTo(e.target.value)}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none transition"
+                >
+                  <option value="">Select User</option>
+                  <option value="abhishek">Abhishek</option>
+                  <option value="rohit">Rohit</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="space-y-4">
               <button
-                onClick={cancilUpdate}
-                className="bg-red-500 text-white font-semibold py-2 px-4 rounded-lg  transition duration-300 ease-in-out"
+                disabled={!title || !description || !priority}
+                onClick={handleAddNote}
+                type="submit"
+                className="w-full py-3 text-white bg-indigo-600  disabled:bg-blue-500 hover:bg-indigo-700 rounded-xl font-medium transition-all duration-300 shadow-md"
               >
-                Cancel Update
+                ➕ {isEdit ? "update Task" : "Create Task"}
               </button>
-            )}
-            <button
-              disabled={!title || !description || !priority}
-              onClick={handleAddNote}
-              className="bg-blue-500 disabled:bg-blue-500 dark:bg-purple-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-300 ease-in-out"
-            >
-              Add Notes
-            </button>
-          </div>
+              {isEdit ? (
+                <button
+                  className="w-full py-3 text-white bg-red-600  disabled:bg-red-500 hover:bg-red-700 rounded-xl font-medium transition-all duration-300 shadow-md"
+                  onClick={cancelUpdate}
+                >
+                  Cancel Update
+                </button>
+              ) : null}
+            </div>
+          </form>
         </div>
-      </div>
-      <NotesList
-        noteList={notes}
-        handleDelete={handleDelete}
-        handleEdit={handleEdit}
-        handleTaskPin={handleTaskPin}
-        pinTask={pinTask}
-      />
+      ) : (
+        <NotesList
+          noteList={notes}
+          handleDelete={handleDelete}
+          handleEdit={handleEdit}
+          handleTaskPin={handleTaskPin}
+          pinTask={pinTask}
+          isDarkMode={isDarkMode}
+          toggleDarkMode={toggleDarkMode}
+          setShowNotesList={setShowNotesList}
+          searchVal={searchVal}
+          setSearchVal={setSearchVal}
+        />
+      )}
     </div>
   );
 }
-
-export default Notes;

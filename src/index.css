@@ -1,15 +1,82 @@
 @import "tailwindcss";
-
-body {
-  background-color: rgb(42, 41, 41, 0.5);
-}
-
 .bg-transparent {
   background-color: rgba(0, 0, 0, 0.8);
 }
-
 .noteList {
   height: 100%;
   overflow-y: auto;
   max-height: 250px;
+}
+.bg-custom-green {
+  background-color: #1db954;
+}
+.text-custom-green {
+  color: #1db954;
+}
+
+body {
+  font-family: "Arial", sans-serif;
+}
+
+.bg-custom {
+  background-color: #121212;
+}
+
+.bg-green-500 {
+  background-color: #1db954;
+}
+
+.bg-custom2 {
+  background-color: #181818;
+}
+
+.text-green-500 {
+  color: #1db954;
+}
+
+.text-gray-400 {
+  color: #b3b3b3;
+}
+
+.text-white {
+  color: #ffffff;
+}
+
+.cursor-pointer:hover {
+  color: #1db954;
+}
+
+button {
+  /* background-color: #1db954; */
+  cursor: pointer;
+}
+
+.bg-custom2:hover {
+  transform: scale(1.05);
+}
+
+.fas {
+  font-size: 1.5rem;
+}
+
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  background: #2c2c2c;
+  height: 8px;
+  border-radius: 5px;
+  outline: none;
+}
+
+input[type="range"]:focus {
+  border: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  background: #1db954;
+  border-radius: 50%;
 }
